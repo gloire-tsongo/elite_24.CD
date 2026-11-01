@@ -1,37 +1,65 @@
-# ELITE.CD - API Node.js
+# ELITE24.CD - Backend Node.js
 
-Migration de la logique PHP vers Express.js, Prisma et MySQL. L'ancien projet PHP reste disponible à la racine.
+Backend Express.js avec vues EJS et base MySQL gérée par Prisma.
 
 ## Installation
 
-1. Installer Node.js 20 ou supérieur.
-2. Copier `.env.example` vers `.env` et renseigner `DATABASE_URL` et `JWT_SECRET`.
-3. Créer la base MySQL `elite_media_db`.
-4. Exécuter :
-
 ```powershell
-cd C:\xampp\htdocs\elite_cd\backend
-npm install
+cd backend
+npm ci
+Copy-Item .env.example .env
 npx prisma generate
-npx prisma migrate dev --name initial
+npx prisma migrate deploy
 npm run prisma:seed
 npm run dev
 ```
 
-L'API démarre sur `http://localhost:3000`.
+## Variables d'environnement
 
-## Routes principales
+| Variable | Obligatoire | Exemple |
+|---|---:|---|
+| `DATABASE_URL` | Oui | `mysql://root:@localhost:3306/elite_media_node` |
+| `JWT_SECRET` | Oui | chaîne secrète longue et aléatoire |
+| `NODE_ENV` | Oui | `development` ou `production` |
+| `PORT` | Non | `3000` |
+| `UPLOAD_DIR` | Non | `uploads` |
+| `ADMIN_PASSWORD` | Oui pour le seed | mot de passe administrateur sécurisé |
 
-- `GET /api/health` : état de l'API
-- `POST /api/auth/login` : connexion et émission d'un JWT
-- `GET /api/public/home` : accueil, une, dix derniers articles et catégories actives
-- `GET /api/public/categories/:slug/articles` : articles publiés d'une catégorie
-- `GET /api/public/articles/:identifier` : article par identifiant ou slug et enregistrement d'une vue
-- `POST /api/public/articles/:id/comments` : commentaire en attente de modération
-- `GET /api/admin/dashboard` : métriques et activité récente
-- `POST /api/admin/articles` : publication multipart avec `coverImage`
-- `PATCH /api/admin/comments/:id` : statut ou réponse d'un commentaire
-- `GET /api/admin/users` : comptes administrateurs, rôle superadmin requis
-- `DELETE /api/admin/users/:id` : suppression protégée contre l'auto-suppression
+Ne publiez jamais `.env`. Utilisez `.env.example` comme modèle.
 
-Les routes privées utilisent `Authorization: Bearer <token>`.
+## Commandes
+
+```powershell
+npm run dev          # Serveur avec Nodemon
+npm start            # Serveur de production
+npm test             # Tests Node.js
+npm run prisma:generate
+npm run prisma:migrate
+npm run prisma:seed
+```
+
+## Routes web
+
+- `GET /`
+- `GET /a-propos`
+- `GET /contact`
+- `GET /admin/login`
+- `GET /admin`
+- `GET /admin/articles/new`
+- `GET /article/:identifier`
+
+## Routes API
+
+- `GET /api/health`
+- `POST /api/auth/login`
+- `GET /api/public/home`
+- `GET /api/public/categories/:slug/articles`
+- `GET /api/public/articles/:identifier`
+- `POST /api/public/articles/:id/comments`
+- `GET /api/admin/dashboard`
+- `POST /api/admin/articles`
+- `PATCH /api/admin/comments/:id`
+- `GET /api/admin/users`
+- `DELETE /api/admin/users/:id`
+
+Les routes privées administrateur utilisent le cookie `elite_token` ou le jeton JWT de l'en-tête `Authorization: Bearer <token>`.
