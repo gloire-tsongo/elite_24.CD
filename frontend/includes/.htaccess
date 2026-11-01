@@ -1,0 +1,12 @@
+# Empêcher l'accès direct aux fichiers du dossier includes
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Deny from all
+</IfModule>
+
+# Autoriser l'accès uniquement via le serveur (inclus depuis PHP)
+<FilesMatch "\.(php|inc)$">
+    Require all denied
+</FilesMatch>

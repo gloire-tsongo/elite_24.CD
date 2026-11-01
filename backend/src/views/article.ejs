@@ -1,0 +1,20 @@
+<% const articleShareUrl = typeof shareUrl === 'undefined' ? '' : shareUrl; var commentSent = Boolean(locals.commentSent); %>
+<!doctype html>
+<html lang="fr">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title><%= article.titre %> | ELITE24.CD</title><link rel="stylesheet" href="/style.css"></head>
+<body class="reading-page home-page">
+<header class="mock-header"><div class="mock-utility"><span><strong>ELITE24.CD</strong> · Beni, Est RDC</span><span>La voix de l'Est en ligne</span><span class="mock-utility-links"><a href="/contact">Contact rédaction</a></span></div><div class="mock-masthead"><a class="mock-logo" href="/">ÉLITE<span>24</span>.CD</a><div class="mock-tagline"><strong>L'INFO D'EXCELLENCE</strong><span>La voix de l'Est en ligne</span></div></div><nav class="mock-nav"><a href="/">À la une</a><a href="/a-propos">À propos</a><a href="/contact">Contact</a></nav></header>
+<main class="reading">
+<p class="eyebrow"><%= article.category.nom %></p>
+<h1><%= article.titre %></h1>
+<div class="share-bar" aria-label="Partager cet article"><span>Partager</span><a class="share-button whatsapp" href="https://wa.me/?text=<%= encodeURIComponent(article.titre + ' ' + articleShareUrl) %>" target="_blank" rel="noopener noreferrer" aria-label="Partager sur WhatsApp"><b>W</b><span>WhatsApp</span></a><a class="share-button facebook" href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(articleShareUrl) %>" target="_blank" rel="noopener noreferrer" aria-label="Partager sur Facebook"><b>f</b><span>Facebook</span></a><a class="share-button x-social" href="https://twitter.com/intent/tweet?text=<%= encodeURIComponent(article.titre) %>&url=<%= encodeURIComponent(articleShareUrl) %>" target="_blank" rel="noopener noreferrer" aria-label="Partager sur X"><b>𝕏</b><span>X</span></a><a class="share-button telegram" href="https://t.me/share/url?url=<%= encodeURIComponent(articleShareUrl) %>&text=<%= encodeURIComponent(article.titre) %>" target="_blank" rel="noopener noreferrer" aria-label="Partager sur Telegram"><b>➤</b><span>Telegram</span></a><a class="share-button email" href="mailto:?subject=<%= encodeURIComponent(article.titre) %>&body=<%= encodeURIComponent(articleShareUrl) %>" aria-label="Partager par e-mail"><b>@</b><span>E-mail</span></a></div>
+<small class="meta"><%= article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('fr-FR') : '' %></small>
+<% if (article.coverImage) { %><div class="media-cover"><img src="/uploads/<%= article.coverImage %>" alt="<%= article.titre %>"></div><% } %>
+<% if (videoEmbedUrl) { %><div class="video-player"><iframe src="<%= videoEmbedUrl %>" title="Vidéo : <%= article.titre %>" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><% } %>
+<% if (article.mediaType === 'audio' && article.mediaUrl) { %><div class="audio-player"><audio controls preload="metadata" src="<%= article.mediaUrl %>"></audio></div><% } %>
+<div class="article-body"><%- article.contenu %></div>
+<section class="comment-form"><h2>Réagir à cet article</h2><% if (commentSent) { %><p class="comment-success">Votre commentaire a été envoyé à la rédaction. Il sera publié après modération.</p><% } %><form method="post" action="/article/<%= article.id %>/comments"><label>Votre nom<input name="authorName" required maxlength="100"></label><label>Votre commentaire<textarea name="message" required maxlength="2000" rows="5"></textarea></label><button type="submit">Envoyer le commentaire</button></form></section>
+</main>
+<footer class="site-footer"><strong>ELITE24.CD</strong> · Ce projet a été conçu par <strong>ELITETECHNOLOGIE</strong></footer>
+</body>
+</html>

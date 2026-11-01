@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  admin
+  superadmin
+}
+
+enum MediaType {
+  texte
+  video
+  audio
+}
+
+enum ArticleStatus {
+  brouillon
+  publie
+  archive
+}
+
+enum CommentStatus {
+  en_attente
+  approuve
+  rejete
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  username  String    @unique @db.VarChar(50)
+  passwordHash String  @map("password_hash") @db.VarChar(255)
+  email     String?   @unique @db.VarChar(100)
+  role      UserRole  @default(admin)
+  articles  Article[]
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  nom       String    @db.VarChar(100)
+  slug      String    @unique @db.VarChar(120)
+  articles  Article[]
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@map("categories")
+}
+
+model Article {
+  id          Int           @id @default(autoincrement())
+  titre       String        @db.VarChar(200)
+  slug        String        @unique @db.VarChar(220)
+  contenu     String        @db.LongText
+  categoryId  Int           @map("category_id")
+  authorId    Int           @map("author_id")
+  coverImage  String?       @map("cover_image") @db.VarChar(255)
+  mediaType   MediaType     @default(texte) @map("media_type")
+  mediaUrl    String?       @map("media_url") @db.VarChar(255)
+  statut      ArticleStatus @default(brouillon)
+  viewsCount  Int           @default(0) @map("views_count")
+  publishedAt DateTime?     @map("published_at")
+  category    Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  author      User          @relation(fields: [authorId], references: [id])
+  comments    Comment[]
+  views       ArticleView[]
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+
+  @@index([categoryId])
+  @@index([statut, publishedAt])
+  @@map("articles")
+}
+
+model Comment {
+  id          Int           @id @default(autoincrement())
+  articleId   Int           @map("article_id")
+  authorName  String        @map("author_name") @db.VarChar(100)
+  message     String        @db.Text
+  statut      CommentStatus @default(en_attente)
+  adminReply  String?       @map("admin_reply") @db.Text
+  repliedAt   DateTime?     @map("replied_at")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  article     Article       @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([articleId, statut])
+  @@map("commentaires")
+}
+
+model ArticleView {
+  id        Int      @id @default(autoincrement())
+  articleId Int      @map("article_id")
+  ipAddress String?  @map("ip_address") @db.VarChar(45)
+  country   String?  @db.VarChar(100)
+  region    String?  @db.VarChar(100)
+  city      String?  @db.VarChar(100)
+  userAgent String?  @map("user_agent") @db.VarChar(255)
+  viewedAt  DateTime @default(now()) @map("viewed_at")
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([articleId])
+  @@index([country])
+  @@index([region])
+  @@index([city])
+  @@map("article_views")
+}

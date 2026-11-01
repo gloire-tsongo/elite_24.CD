@@ -1,0 +1,23 @@
+# Protéger le dossier images
+
+# Interdire l'exécution des fichiers PHP
+<FilesMatch "\.php$">
+    Deny from all
+</FilesMatch>
+
+# Permettre l'accès aux images seulement
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|svg)$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+
+# Bloquer tout ce qui n'est pas une image
+<FilesMatch "^[^\.]">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Ajouter les en-têtes de cache
+<IfModule mod_headers.c>
+    Header set Cache-Control "max-age=2592000, public"
+</IfModule>

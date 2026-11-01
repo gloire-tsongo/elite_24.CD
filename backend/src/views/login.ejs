@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Connexion | ELITE24.CD</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="auth-page">
+  <main class="auth">
+    <a class="brand auth-brand" href="/" aria-label="Accueil ELITE24.CD">ELITE24<span>.CD</span></a>
+    <div class="auth-panel">
+      <p class="eyebrow">Accès réservé</p>
+      <h1>Administration</h1>
+      <% if (error) { %><p class="error"><%= error %></p><% } %>
+      <form method="post">
+        <label>Nom d’utilisateur
+          <input name="username" required>
+        </label>
+        <label>Mot de passe
+          <input type="password" name="password" required>
+        </label>
+        <button type="submit">Se connecter</button>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

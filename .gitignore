@@ -1,0 +1,33 @@
+# Variables d'environnement
+.env
+.env.local
+.env.*.local
+backend/.env
+backend/.env.local
+backend/.env.*.local
+
+# Dossiers de dépendances
+node_modules/
+backend/node_modules/
+vendor/
+
+# Uploads et journaux générés
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/logs/
+
+# IDE et éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Fichiers temporaires et caches
+*.tmp
+*.log
+*.cache
+
+# Fichiers de configuration sensibles
+config_local.php
