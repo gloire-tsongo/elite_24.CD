@@ -1,7 +1,27 @@
-<% const articleShareUrl = typeof shareUrl === 'undefined' ? '' : shareUrl; var commentSent = Boolean(locals.commentSent); %>
+<% const articleShareUrl = typeof shareUrl === 'undefined' ? '' : shareUrl; var commentSent = Boolean(locals.commentSent); const articleDescription = typeof description === 'undefined' ? '' : description; const articleImage = typeof socialImageUrl === 'undefined' ? '' : socialImageUrl; %>
 <!doctype html>
 <html lang="fr">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title><%= article.titre %> | ELITE24.CD</title><link rel="stylesheet" href="/style.css"></head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title><%= article.titre %> | ELITE24.CD</title>
+  <meta name="description" content="<%= articleDescription %>">
+  <link rel="canonical" href="<%= articleShareUrl %>">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="ELITE24.CD">
+  <meta property="og:locale" content="fr_CD">
+  <meta property="og:title" content="<%= article.titre %>">
+  <meta property="og:description" content="<%= articleDescription %>">
+  <meta property="og:url" content="<%= articleShareUrl %>">
+  <% if (articleImage) { %><meta property="og:image" content="<%= articleImage %>"><% } %>
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= article.titre %>">
+  <meta name="twitter:description" content="<%= articleDescription %>">
+  <% if (articleImage) { %><meta name="twitter:image" content="<%= articleImage %>"><% } %>
+  <link rel="stylesheet" href="/style.css">
+</head>
 <body class="reading-page home-page">
 <header class="mock-header"><div class="mock-utility"><span><strong>ELITE24.CD</strong> · Beni, Est RDC</span><span>La voix de l'Est en ligne</span><span class="mock-utility-links"><a href="/contact">Contact rédaction</a></span></div><div class="mock-masthead"><a class="mock-logo" href="/">ÉLITE<span>24</span>.CD</a><div class="mock-tagline"><strong>L'INFO D'EXCELLENCE</strong><span>La voix de l'Est en ligne</span></div></div><nav class="mock-nav"><a href="/">À la une</a><a href="/a-propos">À propos</a><a href="/contact">Contact</a></nav></header>
 <main class="reading">

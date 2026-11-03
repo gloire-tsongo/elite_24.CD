@@ -61,8 +61,29 @@ router.get('/article/:identifier', async (req, res, next) => {
     const article = await req.app.locals.prisma.article.findFirst({ where: { OR: [{ slug: value }, ...(Number.isInteger(Number(value)) ? [{ id: Number(value) }] : [])], statut: 'publie' }, include: { category: true } });
     if (!article) return res.status(404).render('error', { message: 'Article introuvable.' });
     await req.app.locals.prisma.article.update({ where: { id: article.id }, data: { viewsCount: { increment: 1 } } });
-    const shareUrl = `${req.protocol}://${req.get('host')}${req.path}`;
-    res.render('article', { article, shareUrl, commentSent: req.query.comment === 'sent', videoEmbedUrl: article.mediaType === 'video' ? youtubeEmbedUrl(article.mediaUrl) : null });
+    const forwardedProto = String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim();
+    const forwardedHost = String(req.headers['x-forwarded-host'] || '').split(',')[0].trim();
+    const requestBaseUrl = `${forwardedProto || req.protocol}://${forwardedHost || req.get('host')}`;
+    const publicBaseUrl = String(process.env.SITE_URL || process.env.PUBLIC_URL || requestBaseUrl).replace(/\/$/, '');
+    const shareUrl = `${publicBaseUrl}/article/${encodeURIComponent(article.slug)}`;
+    const plainDescription = String(article.contenu || '')
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const description = plainDescription.length > 180 ? `${plainDescription.slice(0, 177).trim()}...` : plainDescription;
+    const socialImageUrl = article.coverImage
+      ? `${publicBaseUrl}/uploads/${encodeURIComponent(article.coverImage).replace(/%2F/g, '/')}`
+      : null;
+    res.render('article', {
+      article,
+      shareUrl,
+      socialImageUrl,
+      description,
+      publicBaseUrl,
+      commentSent: req.query.comment === 'sent',
+      videoEmbedUrl: article.mediaType === 'video' ? youtubeEmbedUrl(article.mediaUrl) : null
+    });
   } catch (error) { next(error); }
 });
 
