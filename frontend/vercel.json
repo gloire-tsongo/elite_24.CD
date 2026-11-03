@@ -1,5 +1,10 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "public": true
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "https://elite-24-cd.onrender.com/$1"
+    }
+  ]
 }
