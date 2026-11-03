@@ -235,3 +235,7 @@ router.get('/admin', async (req, res, next) => {
 
 router.get('/admin/logout', (req, res) => { res.clearCookie('elite_token'); res.redirect('/'); });
 module.exports = router;
+
+router.get('/robots.txt', (req, res) => {
+  res.type('text/plain').send('User-agent: *\nAllow: /article/\nAllow: /categorie/\nAllow: /a-propos\nAllow: /contact\nDisallow: /admin\nDisallow: /api/\nDisallow: /uploads/editor/\n');
+});
