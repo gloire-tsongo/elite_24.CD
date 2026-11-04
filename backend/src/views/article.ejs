@@ -13,7 +13,7 @@
   <meta property="og:title" content="<%= article.titre %>">
   <meta property="og:description" content="<%= articleDescription %>">
   <meta property="og:url" content="<%= articleShareUrl %>">
-  <% if (articleImage) { %><meta property="og:image" content="<%= articleImage %>"><% } %>
+  <% if (articleImage) { %><meta property="og:image" content="<%= articleImage %>"><meta property="og:image:secure_url" content="<%= articleImage %>"><meta property="og:image:type" content="image/webp"><% } %>
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
@@ -29,7 +29,7 @@
 <h1><%= article.titre %></h1>
 <div class="share-bar" aria-label="Partager cet article"><span>Partager</span><a class="share-button whatsapp" href="https://wa.me/?text=<%= encodeURIComponent(article.titre + ' ' + articleShareUrl) %>" target="_blank" rel="noopener noreferrer" aria-label="Partager sur WhatsApp"><b>W</b><span>WhatsApp</span></a><a class="share-button facebook" href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(articleShareUrl) %>" target="_blank" rel="noopener noreferrer" aria-label="Partager sur Facebook"><b>f</b><span>Facebook</span></a><a class="share-button x-social" href="https://twitter.com/intent/tweet?text=<%= encodeURIComponent(article.titre) %>&url=<%= encodeURIComponent(articleShareUrl) %>" target="_blank" rel="noopener noreferrer" aria-label="Partager sur X"><b>𝕏</b><span>X</span></a><a class="share-button telegram" href="https://t.me/share/url?url=<%= encodeURIComponent(articleShareUrl) %>&text=<%= encodeURIComponent(article.titre) %>" target="_blank" rel="noopener noreferrer" aria-label="Partager sur Telegram"><b>➤</b><span>Telegram</span></a><a class="share-button email" href="mailto:?subject=<%= encodeURIComponent(article.titre) %>&body=<%= encodeURIComponent(articleShareUrl) %>" aria-label="Partager par e-mail"><b>@</b><span>E-mail</span></a></div>
 <small class="meta"><%= article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('fr-FR') : '' %></small>
-<% if (article.coverImage) { %><div class="media-cover"><img src="/uploads/<%= article.coverImage %>" alt="<%= article.titre %>"></div><% } %>
+<% if (article.coverImage) { %><div class="media-cover"><img src="<%= imageUrl(article.coverImage, publicBaseUrl) %>" alt="<%= article.titre %>" loading="eager" decoding="async"></div><% } %>
 <% if (videoEmbedUrl) { %><div class="video-player"><iframe src="<%= videoEmbedUrl %>" title="Vidéo : <%= article.titre %>" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><% } %>
 <% if (article.mediaType === 'audio' && article.mediaUrl) { %><div class="audio-player"><audio controls preload="metadata" src="<%= article.mediaUrl %>"></audio></div><% } %>
 <div class="article-body"><%- article.contenu %></div>

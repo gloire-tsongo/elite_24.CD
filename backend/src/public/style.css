@@ -454,6 +454,21 @@ a:hover { color: var(--orange); }
 .home-page .mock-ticker:hover { animation-play-state: paused; }
 .home-page .mock-ticker a { color: #fee2e2; font-size: 0.78rem; font-weight: 600; }
 @keyframes mockTicker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.home-page .mock-intro { animation: homeReveal .8s ease-out both; }
+.home-page .mock-hero-card { animation: heroEntrance 1s .15s ease-out both; }
+.home-page .mock-hero-card > img { animation: heroDrift 12s ease-in-out infinite alternate; }
+.home-page .mock-article-card { transition: transform .25s ease, box-shadow .25s ease; }
+.home-page .mock-article-card:hover { transform: translateY(-6px); box-shadow: 0 16px 34px rgba(15, 23, 42, 0.12); }
+.home-page .mock-article-card:nth-child(3n + 1) { animation: cardReveal .7s .08s ease-out both; }
+.home-page .mock-article-card:nth-child(3n + 2) { animation: cardReveal .7s .16s ease-out both; }
+.home-page .mock-article-card:nth-child(3n + 3) { animation: cardReveal .7s .24s ease-out both; }
+.home-page .flash-dot { animation: flashPulse 1.6s ease-in-out infinite; }
+@keyframes homeReveal { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes heroEntrance { from { opacity: 0; transform: translateY(24px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes heroDrift { from { transform: scale(1); } to { transform: scale(1.045); } }
+@keyframes cardReveal { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes flashPulse { 0%, 100% { opacity: .55; transform: scale(.85); } 50% { opacity: 1; transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .home-page *, .home-page *::before, .home-page *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
 .home-page .mock-main { max-width: 1280px; padding: 44px clamp(18px, 5vw, 72px) 60px; }
 .home-page .mock-intro { display: flex; justify-content: space-between; gap: 24px; align-items: end; padding-bottom: 22px; border-bottom: 1px solid var(--mock-line); }
 .home-page .mock-kicker, .home-page .mock-category, .home-page .mock-section-title { margin: 0; color: var(--mock-red); font-size: 0.68rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }

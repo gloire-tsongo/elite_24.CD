@@ -7,6 +7,7 @@ const sanitizeHtml = require('sanitize-html');
 const { requireAuth, requireRole } = require('../middleware/auth');
 const { uniqueSlug } = require('../utils/slug');
 const { youtubeVideoId } = require('../utils/youtube');
+const { storeImageBuffer } = require('../utils/storage');
 
 const imageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif', 'image/tiff', 'image/bmp', 'image/svg+xml'];
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 }, fileFilter: (req, file, cb) => cb(null, imageTypes.includes(file.mimetype)) });
@@ -35,11 +36,7 @@ router.post('/articles', requireRole('admin', 'superadmin'), upload.single('cove
     const slug = await uniqueSlug(prisma, 'article', titre);
     let coverImage;
     if (req.file) {
-      const uploadDir = path.resolve(process.env.UPLOAD_DIR || 'uploads');
-      fs.mkdirSync(uploadDir, { recursive: true });
-      coverImage = `${slug}-${Date.now()}.webp`;
-      savedPath = path.join(uploadDir, coverImage);
-      await sharp(req.file.buffer).resize({ width: 1600, withoutEnlargement: true }).webp({ quality: 82 }).toFile(savedPath);
+      coverImage = await storeImageBuffer(req.file.buffer, `${slug}-${Date.now()}`, { width: 1600, height: 900, quality: 82 });
     }
     const article = await prisma.article.create({ data: { titre, slug, contenu: sanitizeHtml(contenu, allowedHtml), categoryId: Number(categoryId), authorId: req.user.id, coverImage, mediaType, mediaUrl: mediaUrl || null, statut, publishedAt: statut === 'publie' ? new Date() : null } });
     res.status(201).json(article);

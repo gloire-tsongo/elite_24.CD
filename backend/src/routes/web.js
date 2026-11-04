@@ -8,6 +8,7 @@ const sharp = require('sharp');
 const sanitizeHtml = require('sanitize-html');
 const { uniqueSlug } = require('../utils/slug');
 const { youtubeEmbedUrl } = require('../utils/youtube');
+const { storeImageBuffer, publicImageUrl } = require('../utils/storage');
 const rateLimit = require('express-rate-limit');
 const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, standardHeaders: true, legacyHeaders: false });
 
@@ -72,9 +73,7 @@ router.get('/article/:identifier', async (req, res, next) => {
       .replace(/\s+/g, ' ')
       .trim();
     const description = plainDescription.length > 180 ? `${plainDescription.slice(0, 177).trim()}...` : plainDescription;
-    const socialImageUrl = article.coverImage
-      ? `${publicBaseUrl}/uploads/${encodeURIComponent(article.coverImage).replace(/%2F/g, '/')}`
-      : null;
+    const socialImageUrl = publicImageUrl(article.coverImage, publicBaseUrl);
     res.render('article', {
       article,
       shareUrl,
@@ -120,11 +119,8 @@ function requireWebAuth(req, res, next) {
 router.post('/admin/editor-images', requireWebAuth, upload.single('image'), async (req, res, next) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'Sélectionnez une image valide de 10 Mo maximum.' });
-    const uploadDir = path.resolve(process.env.UPLOAD_DIR || 'uploads', 'editor');
-    fs.mkdirSync(uploadDir, { recursive: true });
-    const fileName = `article-${Date.now()}-${Math.random().toString(36).slice(2)}.webp`;
-    await sharp(req.file.buffer).resize({ width: 1800, withoutEnlargement: true }).webp({ quality: 84 }).toFile(path.join(uploadDir, fileName));
-    res.json({ url: `/uploads/editor/${fileName}` });
+    const storedImage = await storeImageBuffer(req.file.buffer, `editor-${Date.now()}-${Math.random().toString(36).slice(2)}`, { width: 1800 });
+    res.json({ url: storedImage.startsWith('http') ? storedImage : `/uploads/${storedImage}` });
   } catch (error) { next(error); }
 });
 
@@ -145,11 +141,7 @@ router.post('/admin/articles', requireWebAuth, upload.fields([{ name: 'coverImag
     let coverImage;
     const coverFile = req.files && req.files.coverImage ? req.files.coverImage[0] : null;
     if (coverFile) {
-      const uploadDir = path.resolve(process.env.UPLOAD_DIR || 'uploads');
-      fs.mkdirSync(uploadDir, { recursive: true });
-      coverImage = `${slug}-${Date.now()}.webp`;
-      savedPath = path.join(uploadDir, coverImage);
-      await sharp(coverFile.buffer).resize({ width: 1600, withoutEnlargement: true }).webp({ quality: 82 }).toFile(savedPath);
+      coverImage = await storeImageBuffer(coverFile.buffer, `${slug}-${Date.now()}`, { width: 1600, height: 900, quality: 82 });
     }
     let finalMediaUrl = mediaUrl || null;
     const audioFile = req.files && req.files.audioFile ? req.files.audioFile[0] : null;
@@ -187,12 +179,7 @@ router.post('/admin/articles/:id', requireWebAuth, upload.fields([{ name: 'cover
     const data = { titre, contenu: sanitizeHtml(contenu, allowedHtml), categoryId: Number(categoryId), mediaType, mediaUrl: mediaUrl || existing.mediaUrl || null, statut, publishedAt: statut === 'publie' ? (existing.publishedAt || new Date()) : null };
     const coverFile = req.files && req.files.coverImage ? req.files.coverImage[0] : null;
     if (coverFile) {
-      const uploadDir = path.resolve(process.env.UPLOAD_DIR || 'uploads');
-      fs.mkdirSync(uploadDir, { recursive: true });
-      data.coverImage = `${existing.slug}-${Date.now()}.webp`;
-      savedPath = path.join(uploadDir, data.coverImage);
-      await sharp(coverFile.buffer).resize({ width: 1600, withoutEnlargement: true }).webp({ quality: 82 }).toFile(savedPath);
-      if (existing.coverImage) { const oldPath = path.join(uploadDir, existing.coverImage); if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath); }
+      data.coverImage = await storeImageBuffer(coverFile.buffer, `${existing.slug}-${Date.now()}`, { width: 1600, height: 900, quality: 82 });
     }
     const audioFile = req.files && req.files.audioFile ? req.files.audioFile[0] : null;
     if (mediaType === 'audio' && audioFile) {

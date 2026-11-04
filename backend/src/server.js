@@ -9,6 +9,7 @@ const authRoutes = require('./routes/auth');
 const publicRoutes = require('./routes/public');
 const adminRoutes = require('./routes/admin');
 const webRoutes = require('./routes/web');
+const { publicImageUrl } = require('./utils/storage');
 
 if (process.env.NODE_ENV === 'production') {
   if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL est obligatoire en production.');
@@ -20,6 +21,7 @@ const prisma = new PrismaClient();
 const port = Number(process.env.PORT || 3000);
 
 app.locals.prisma = prisma;
+app.locals.imageUrl = publicImageUrl;
 app.set('trust proxy', 1);
 app.disable('x-powered-by');
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
@@ -51,7 +53,7 @@ app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 app.use(express.static(require('path').join(__dirname, 'public'), { maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0 }));
 app.set('view engine', 'ejs');
 app.set('views', require('path').join(__dirname, 'views'));
-app.use('/uploads', express.static(process.env.UPLOAD_DIR || 'uploads', { dotfiles: 'deny', fallthrough: false, maxAge: '1d' }));
+app.use('/uploads', express.static(process.env.UPLOAD_DIR || 'uploads', { dotfiles: 'deny', fallthrough: false, maxAge: process.env.NODE_ENV === 'production' ? '30d' : 0, immutable: process.env.NODE_ENV === 'production' }));
 app.use('/api/auth', rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, standardHeaders: true, legacyHeaders: false }), authRoutes);
 app.use('/api/public', publicRoutes);
 app.use('/api/admin', adminRoutes);

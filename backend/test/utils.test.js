@@ -5,6 +5,9 @@ const { youtubeVideoId, youtubeEmbedUrl } = require('../src/utils/youtube');
 test('youtubeVideoId extrait un identifiant YouTube valide', () => {
   assert.equal(youtubeVideoId('https://www.youtube.com/watch?v=abcdefghijk'), 'abcdefghijk');
   assert.equal(youtubeVideoId('https://youtu.be/abcdefghijk'), 'abcdefghijk');
+  assert.equal(youtubeVideoId('https://www.youtube.com/shorts/abcdefghijk'), 'abcdefghijk');
+  assert.equal(youtubeVideoId('https://www.youtube.com/embed/abcdefghijk'), 'abcdefghijk');
+  assert.equal(youtubeVideoId('https://www.youtube.com/live/abcdefghijk'), 'abcdefghijk');
 });
 
 test('youtubeVideoId rejette une URL non YouTube', () => {
