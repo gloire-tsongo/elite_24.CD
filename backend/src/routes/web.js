@@ -208,15 +208,17 @@ router.get('/admin', async (req, res, next) => {
     const user = readToken(req);
     if (!user) return res.redirect('/admin/login');
     const prisma = req.app.locals.prisma;
-    const [articles, categories, pendingComments, comments, articleList, commentList] = await Promise.all([
+    const [articles, categories, pendingComments, comments, articleList, categoryList, commentList, allCommentList] = await Promise.all([
       prisma.article.count(),
       prisma.category.count(),
       prisma.comment.count({ where: { statut: 'en_attente' } }),
       prisma.comment.count(),
       prisma.article.findMany({ orderBy: { createdAt: 'desc' }, include: { category: true }, take: 30 }),
-      prisma.comment.findMany({ where: { statut: 'en_attente' }, orderBy: { createdAt: 'desc' }, include: { article: true }, take: 20 })
+      prisma.category.findMany({ orderBy: { nom: 'asc' }, include: { _count: { select: { articles: true } } } }),
+      prisma.comment.findMany({ where: { statut: 'en_attente' }, orderBy: { createdAt: 'desc' }, include: { article: true }, take: 20 }),
+      prisma.comment.findMany({ orderBy: { createdAt: 'desc' }, include: { article: true }, take: 30 })
     ]);
-    res.render('dashboard', { user, metrics: { articles, categories, pendingComments, comments }, articleList, commentList });
+    res.render('dashboard', { user, metrics: { articles, categories, pendingComments, comments }, articleList, categoryList, commentList, allCommentList });
   } catch (error) { next(error); }
 });
 
