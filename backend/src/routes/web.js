@@ -27,14 +27,14 @@ router.get('/', async (req, res, next) => {
   try {
     const prisma = req.app.locals.prisma;
     const [articles, popularArticles, categories] = await Promise.all([
-      prisma.article.findMany({ where: { statut: 'publie' }, orderBy: { publishedAt: 'desc' }, take: 10, include: { category: true } }),
+      prisma.article.findMany({ where: { statut: 'publie' }, orderBy: [{ publishedAt: { sort: 'desc', nulls: 'last' } }, { createdAt: 'desc' }, { id: 'desc' }], take: 10, include: { category: true } }),
       prisma.article.findMany({ where: { statut: 'publie' }, orderBy: [{ viewsCount: 'desc' }, { publishedAt: 'desc' }], include: { category: true } }),
       prisma.category.findMany({ where: { articles: { some: { statut: 'publie' } } }, orderBy: { nom: 'asc' } })
     ]);
     const recentArticles = [...articles].sort((a, b) => {
       const dateA = new Date(a.publishedAt || a.createdAt || 0).getTime();
       const dateB = new Date(b.publishedAt || b.createdAt || 0).getTime();
-      return dateB - dateA;
+      return dateB - dateA || new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime() || b.id - a.id;
     });
     res.render('home', { articles: recentArticles, categories, title: null, featured: recentArticles[0] || null, popular: popularArticles, tvArticles: recentArticles.filter(article => article.mediaType !== 'texte').slice(0, 3) });
   } catch (error) { next(error); }
