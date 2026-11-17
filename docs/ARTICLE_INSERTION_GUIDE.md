@@ -45,7 +45,7 @@ Le compte doit posséder le rôle `admin` ou `superadmin`.
 
 ## Images
 
-Les images de couverture sont enregistrées dans `backend/uploads/` et transformées au format WebP.
+Par defaut, les images de couverture sont enregistrees dans `public_html/API/uploads/` et transformees au format WebP. En production, configurez `UPLOAD_DIR` vers un stockage persistant accessible en ecriture.
 
 Les images insérées depuis l'éditeur passent par :
 
@@ -59,7 +59,7 @@ Pour `mediaType=video`, fournissez une URL YouTube valide. L'application extrait
 
 ## Audio
 
-Pour `mediaType=audio`, utilisez soit `mediaUrl`, soit un fichier envoyé avec le champ `audioFile`. Les fichiers importés sont enregistrés dans `backend/uploads/audio/`.
+Pour `mediaType=audio`, utilisez soit `mediaUrl`, soit un fichier envoyé avec le champ `audioFile`. Par defaut, les fichiers importes sont enregistres dans `public_html/API/uploads/audio/`.
 
 ## Vérifications
 

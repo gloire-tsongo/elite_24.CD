@@ -1,0 +1,23 @@
+# Protéger le dossier uploads
+
+# Interdire l'exécution des fichiers PHP
+<FilesMatch "\.php$">
+    Deny from all
+</FilesMatch>
+
+# Autoriser uniquement le fichier rubrique.php
+<Files "rubrique.php">
+    Require all granted
+</Files>
+
+# Permettre l'accès aux images et fichiers autorisés
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|pdf|zip)$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+
+# Bloquer les autres fichiers
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

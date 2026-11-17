@@ -1,28 +1,35 @@
 # ELITE24.CD
 
-Plateforme d'information moderne développée avec Node.js, Express, EJS et Prisma.
+Plateforme d'information developpee avec Node.js, Express, EJS et Prisma.
 
-## Prérequis
+## Prerequis
 
-- Node.js 20 ou supérieur
-- npm 10 ou supérieur
-- MySQL 8 ou compatible
+- Node.js 20 ou superieur
+- npm 10 ou superieur
+- PostgreSQL compatible avec le schema Prisma
 - Git
 
 ## Structure du projet
 
 ```text
 elite_cd/
-├── backend/       API Express, vues EJS, Prisma et fichiers téléversés
-├── frontend/      Ressources documentaires et statiques
-├── README.md      Présentation générale
-└── render.yaml    Déploiement Render
+|-- public_html/
+|   |-- assets/    Ressources statiques du frontend
+|   |-- images/
+|   |-- includes/
+|   `-- API/       Application Node.js, Express, EJS et Prisma
+|-- docs/
+|-- README.md
+|-- render.yaml
+`-- vercel.json
 ```
+
+Pour cPanel, le contenu de `public_html/` correspond à la racine publique et `public_html/API/` contient l'application Node.js. La page `public_html/index.html` charge les actualités depuis l'API; les pages d'article et d'administration restent rendues par EJS dans `public_html/API/src/views`.
 
 ## Installation locale
 
 ```powershell
-cd backend
+cd public_html/API
 npm ci
 Copy-Item .env.example .env
 npx prisma generate
@@ -31,7 +38,7 @@ npm run prisma:seed
 npm run dev
 ```
 
-Configurer ensuite `DATABASE_URL`, `JWT_SECRET` et les autres variables dans `backend/.env`.
+Configurer `DATABASE_URL` PostgreSQL, `JWT_SECRET` et `ADMIN_PASSWORD` dans `public_html/API/.env` en local. Ne publiez jamais ce fichier. En production, executer le seed une seule fois; `npm start` lance le serveur sans reinitialiser le compte admin.
 
 L'application est disponible sur `http://127.0.0.1:3000/`.
 
@@ -40,7 +47,7 @@ L'application est disponible sur `http://127.0.0.1:3000/`.
 ```env
 PORT=3000
 NODE_ENV=development
-DATABASE_URL=mysql://root:@localhost:3306/elite_media_node
+DATABASE_URL=postgresql://user:password@localhost:5432/elite_media_node?schema=public
 JWT_SECRET=une_chaine_secrete_longue
 UPLOAD_DIR=uploads
 ADMIN_PASSWORD=un_mot_de_passe_admin_securise
@@ -49,30 +56,27 @@ ADMIN_PASSWORD=un_mot_de_passe_admin_securise
 ## Interfaces principales
 
 - Accueil : `http://127.0.0.1:3000/`
-- À propos : `http://127.0.0.1:3000/a-propos`
+- A propos : `http://127.0.0.1:3000/a-propos`
 - Contact : `http://127.0.0.1:3000/contact`
 - Connexion : `http://127.0.0.1:3000/admin/login`
 - Tableau de bord : `http://127.0.0.1:3000/admin`
-- Santé API : `http://127.0.0.1:3000/api/health`
+- Sante API : `http://127.0.0.1:3000/api/health`
 
 ## Stack technique
 
 - Node.js et Express
-- EJS pour les vues HTML côté serveur
-- Prisma ORM
-- MySQL
-- JWT pour l'authentification
-- bcrypt pour les mots de passe
-- Multer, Sharp et sanitize-html
+- EJS pour le rendu HTML cote serveur
+- Prisma ORM et PostgreSQL
+- JWT, bcrypt, Multer, Sharp et sanitize-html
 
-## Sécurité
+## Securite
 
-- Ne jamais publier `backend/.env`
-- Utiliser une valeur `JWT_SECRET` longue et aléatoire
+- Ne jamais publier `public_html/API/.env`
+- Utiliser une valeur `JWT_SECRET` longue et aleatoire
 - Utiliser un mot de passe administrateur unique
 - Activer HTTPS en production
-- Sauvegarder régulièrement MySQL et les fichiers téléversés
+- Sauvegarder regulierement PostgreSQL et les fichiers televerses
 
-## Déploiement
+## Deploiement
 
-Le fichier `render.yaml` configure le déploiement sur Render.com. Consulter `frontend/docs/DEPLOYMENT.md` pour les étapes détaillées.
+Le fichier `render.yaml` configure Render. Le guide de deploiement se trouve dans `docs/DEPLOYMENT.md`.

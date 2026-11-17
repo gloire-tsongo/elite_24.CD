@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="L’actualité de Beni, de l’Est et de la République démocratique du Congo.">
+  <meta name="theme-color" content="#0f172a">
+  <title>ELITE24.CD — L’info d’excellence</title>
+  <link rel="icon" href="/assets/img/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/site.css">
+  <style>
+    .home-page .mock-search { display: flex; align-items: center; gap: 8px; }
+    .home-page .mock-search input { width: 100%; min-width: 0; border: 0; outline: 0; color: #0f172a; background: transparent; }
+    .home-page .mock-nav a { border: 0; background: transparent; cursor: pointer; }
+    .home-page .mock-nav a.active { background: #0f172a; color: #fff; }
+    .home-page .feed-status { max-width: 1280px; margin: 0 auto; padding: 18px clamp(18px, 5vw, 72px); color: #475569; }
+    .home-page .feed-status[hidden], .home-page [hidden] { display: none !important; }
+    .home-page .feed-error { color: #991b1b; background: #fef2f2; border-block: 1px solid #fecaca; }
+    .home-page .feed-retry { margin-left: 12px; padding: 6px 12px; border: 1px solid currentColor; background: transparent; color: inherit; cursor: pointer; }
+    .home-page .mock-search:focus-within { border-color: #1e3a8a; box-shadow: 0 0 0 3px rgba(30, 58, 138, .12); }
+    .home-page .mock-article-card:focus-visible, .home-page .mock-side-story:focus-visible, .home-page .mock-nav a:focus-visible { outline: 3px solid #d97706; outline-offset: 3px; }
+    .home-page #footer-categories { display: grid; gap: 8px; }
+    @media (max-width: 760px) {
+      .home-page .mock-search { min-width: 0; }
+      .home-page .mock-utility-links { margin-left: auto; }
+    }
+  </style>
+</head>
+<body class="home-page">
+  <header class="mock-header">
+    <div class="mock-utility">
+      <span><strong>ELITE24.CD</strong> · Beni, Est RDC</span>
+      <span id="current-date"></span>
+      <span class="mock-utility-links"><a href="/API/contact">Contact rédaction</a></span>
+    </div>
+    <div class="mock-masthead">
+      <a class="mock-logo" href="/" aria-label="ELITE24.CD, accueil">ÉLITE<span>24</span>.CD</a>
+      <div class="mock-tagline"><strong>L'INFO D'EXCELLENCE</strong><span>La voix de l'Est en ligne</span></div>
+      <label class="mock-search"><span aria-hidden="true">⌕</span><input id="article-search" type="search" placeholder="Rechercher une actualité..." aria-label="Rechercher une actualité"></label>
+    </div>
+    <nav id="category-nav" class="mock-nav" aria-label="Navigation principale">
+      <a class="active" href="#actualites" data-home>À la une</a>
+      <a href="/API/a-propos">À propos</a>
+    </nav>
+  </header>
+
+  <div class="mock-flash">
+    <strong><span class="flash-dot"></span> FLASH INFO</strong>
+    <div id="news-ticker" class="mock-ticker" aria-live="polite">
+      <a href="#actualites">Chargement des dernières actualités…</a>
+      <a aria-hidden="true" href="#actualites">Chargement des dernières actualités…</a>
+    </div>
+  </div>
+
+  <p id="feed-status" class="feed-status" role="status">Chargement des actualités…</p>
+  <p id="feed-error" class="feed-status feed-error" role="alert" hidden>
+    <span id="feed-error-message">Les actualités n’ont pas pu être chargées.</span>
+    <button id="feed-retry" class="feed-retry" type="button">Réessayer</button>
+  </p>
+
+  <main id="actualites" class="mock-main">
+    <div class="mock-intro">
+      <div>
+        <p id="feed-date" class="mock-kicker">FIL DE L'ACTUALITÉ</p>
+        <h1 id="page-heading">L’essentiel de l’actualité</h1>
+        <p>Les faits, les voix et les sujets qui comptent en République démocratique du Congo et dans la région.</p>
+      </div>
+      <span class="mock-location">Beni · Est de la RDC</span>
+    </div>
+
+    <section id="feature-section" class="mock-feature-grid" aria-label="À la une" hidden>
+      <article id="featured-article" class="mock-hero-card"></article>
+      <aside class="mock-side-stories">
+        <p class="mock-section-title">À suivre</p>
+        <div id="side-stories"></div>
+      </aside>
+    </section>
+
+    <section class="mock-latest" aria-labelledby="latest-heading">
+      <div class="mock-section-heading">
+        <h2 id="latest-heading">Dernières actualités</h2>
+        <span id="article-count"></span>
+      </div>
+      <div id="article-grid" class="mock-article-grid"></div>
+      <p id="empty-feed" class="empty" hidden>Aucun article ne correspond à cette recherche.</p>
+    </section>
+  </main>
+
+  <section class="mock-editorial-band">
+    <div>
+      <span class="mock-kicker">NOTRE ENGAGEMENT</span>
+      <h2>Informer avec rigueur,<br>au plus près du terrain.</h2>
+      <p>Une information claire, fiable et proche des communautés de la République démocratique du Congo.</p>
+    </div>
+    <a href="/API/a-propos">En savoir plus →</a>
+  </section>
+
+  <footer class="mock-footer">
+    <div><a class="mock-logo footer-logo" href="/">ÉLITE<span>24</span>.CD</a><p>La voix de l'Est en ligne.</p></div>
+    <div><strong>EXPLORER</strong><a href="/">À la une</a><a href="/API/a-propos">À propos</a><a href="/API/contact">Contact</a></div>
+    <div><strong>CATÉGORIES</strong><div id="footer-categories"></div></div>
+  </footer>
+  <div class="mock-copyright">ELITE24.CD · Info d'excellence <span>© <span id="current-year"></span></span></div>
+
+  <script src="/assets/js/home.js" defer></script>
+</body>
+</html>

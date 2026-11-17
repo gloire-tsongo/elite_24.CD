@@ -2,19 +2,20 @@
 .env
 .env.local
 .env.*.local
-backend/.env
-backend/.env.local
-backend/.env.*.local
+public_html/API/.env
+public_html/API/.env.local
+public_html/API/.env.*.local
 
 # Dossiers de dépendances
 node_modules/
-backend/node_modules/
+public_html/API/node_modules/
 vendor/
 
 # Uploads et journaux générés
-backend/uploads/*
-!backend/uploads/.gitkeep
-backend/logs/
+public_html/API/uploads/*
+!public_html/API/uploads/.gitkeep
+!public_html/API/uploads/.htaccess
+public_html/API/logs/
 
 # IDE et éditeurs
 .vscode/
